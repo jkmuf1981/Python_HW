@@ -1,56 +1,100 @@
-
 import pytest
 from string_utils import StringUtils
 
-# === Тесты для метода is_palindrome ===
+string_utils = StringUtils()
 
-def test_is_palindrome_positive():
-    """Позитивный тест: проверяется корректная работа с палиндромом."""
-    result = StringUtils.is_palindrome("Аргентина манит негра")
-    assert result == True
+# === Тесты для метода capitalize() ===
 
-def test_is_palindrome_negative():
-    """Негативный тест: проверяется отсутствие палиндрома."""
-    result = StringUtils.is_palindrome("Тестовая строка")
-    assert result == False
+@pytest.mark.positive
+@pytest.mark.parametrize("input_str, expected", [
+    ("skypro", "Skypro"),          # Нормальное значение
+    ("HELLO WORLD", "HELLO WORLD"), # Все большие буквы остаются неизменными
+    ("python", "Python"),           # Одно слово
+])
+def test_capitalize_positive(input_str, expected):
+    assert string_utils.capitalize(input_str) == expected
 
-# === Тесты для метода count_words ===
+@pytest.mark.negative
+@pytest.mark.parametrize("input_str, expected", [
+    ("", ""),                      # Пустая строка
+    ("   ", "   "),                # Пробельные символы
+    (None, TypeError),             # Недопустимое значение
+])
+def test_capitalize_negative(input_str, expected):
+    if isinstance(expected, type):
+        with pytest.raises(expected):
+            string_utils.capitalize(input_str)
+    else:
+        assert string_utils.capitalize(input_str) == expected
 
-def test_count_words_positive():
-    """Позитивный тест: нормальная строка с двумя словами."""
-    result = StringUtils.count_words("Привет мир")
-    assert result == 2
+# === Тесты для метода trim() ===
 
-def test_count_words_empty_string():
-    """Негативный тест: проверка пустой строки."""
-    result = StringUtils.count_words("")
-    assert result == 0
+@pytest.mark.positive
+@pytest.mark.parametrize("input_str, expected", [
+    ("   SkyPro", "SkyPro"),       # Префикс пробелов
+    ("  Python  ", "Python  "),    # Передняя и задняя части
+    ("Test", "Test"),              # Без изменений
+])
+def test_trim_positive(input_str, expected):
+    assert string_utils.trim(input_str) == expected
 
-def test_count_words_only_spaces():
-    """Негативный тест: строка, состоящая только из пробелов."""
-    result = StringUtils.count_words(" ")
-    assert result == 0
+@pytest.mark.negative
+@pytest.mark.parametrize("input_str, expected", [
+    ("", ""),                      # Пустая строка
+    ("   ", ""),                   # Только пробелы
+    (None, AttributeError),        # Некорректный аргумент
+])
+def test_trim_negative(input_str, expected):
+    if isinstance(expected, type):
+        with pytest.raises(expected):
+            string_utils.trim(input_str)
+    else:
+        assert string_utils.trim(input_str) == expected
 
-# === Тесты для метода reverse_string ===
+# === Тесты для метода contains() ===
 
-def test_reverse_string_positive():
-    """Позитивный тест: обратная последовательность символов."""
-    result = StringUtils.reverse_string("Привет мир!")
-    assert result == "!рим теверП"
+@pytest.mark.positive
+@pytest.mark.parametrize("input_str, symbol, expected", [
+    ("SkyPro", "P", True),         # Наличие символа
+    ("SkyPro", "y", True),         # Маленькая буква
+    ("123ABC", "A", True),         # Число + буква
+])
+def test_contains_positive(input_str, symbol, expected):
+    assert string_utils.contains(input_str, symbol) == expected
 
-def test_reverse_string_special_characters():
-    """Позитивный тест: обращение строки с спецсимволами."""
-    result = StringUtils.reverse_string("123$%^&*()")
-    assert result == ")(*&^%$321"
+@pytest.mark.negative
+@pytest.mark.parametrize("input_str, symbol, expected", [
+    ("SkyPro", "X", False),        # Отсутствие символа
+    ("", "a", False),              # Пустая строка
+    (None, "a", AttributeError),   # Неправильный аргумент
+])
+def test_contains_negative(input_str, symbol, expected):
+    if isinstance(expected, type):
+        with pytest.raises(expected):
+            string_utils.contains(input_str, symbol)
+    else:
+        assert string_utils.contains(input_str, symbol) == expected
 
-# === Тесты для метода capitalize_first_letter ===
+# === Тесты для метода delete_symbol() ===
 
-def test_capitalize_first_letter_positive():
-    """Позитивный тест: первая буква заглавная."""
-    result = StringUtils.capitalize_first_letter("привет мир!")
-    assert result == "Привет мир!"
+@pytest.mark.positive
+@pytest.mark.parametrize("input_str, symbol, expected", [
+    ("SkyPro", "S", "kyPro"),      # Удаление первого символа
+    ("SkyPro", "o", "SkyPr"),      # Удаление последнего символа
+    ("123ABC", "B", "123AC"),     # Удаление одной буквы среди цифр
+])
+def test_delete_symbol_positive(input_str, symbol, expected):
+    assert string_utils.delete_symbol(input_str, symbol) == expected
 
-def test_capitalize_first_letter_empty_string():
-    """Негативный тест: реакция на пустую строку."""
-    with pytest.raises(ValueError):
-        StringUtils.capitalize_first_letter("")
+@pytest.mark.negative
+@pytest.mark.parametrize("input_str, symbol, expected", [
+    ("SkyPro", "Z", "SkyPro"),     # Нет такого символа
+    ("", "a", ""),                 # Пустая строка
+    (None, "a", AttributeError),   # Неверный аргумент
+])
+def test_delete_symbol_negative(input_str, symbol, expected):
+    if isinstance(expected, type):
+        with pytest.raises(expected):
+            string_utils.delete_symbol(input_str, symbol)
+    else:
+        assert string_utils.delete_symbol(input_str, symbol) == expected
