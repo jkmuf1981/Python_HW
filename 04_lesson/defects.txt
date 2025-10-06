@@ -1,0 +1,17 @@
+DEFECT-ID: DEF-005
+NAME: Ошибка в методе capitalize при обработке NULL значений
+DESCRIPTION: Метод capitalize возвращает неверный результат при обработке значения None. Вместо ожидаемой ошибки TypeError выдается ошибка AttributeError.
+STEPS TO REPRODUCE:
+1. Создать экземпляр класса StringUtils.
+2. Вызвать метод capitalize с аргументом None.
+3. Проверить результат.
+EXPECTED RESULT: Возникновение ошибки TypeError.
+ACTUAL RESULT: Возникает ошибка AttributeError.
+SEVERITY: Major
+PRIORITY: Medium
+ENVIRONMENT: Python 3.13, PyCharm 2025.2.1.1
+COMPONENT: Модуль обработки строк
+AUTHOR: Ваше_Имя
+CREATED DATE: 2023-10-11
+STATUS: Open
+COMMENTS: Необходима проверка типа перед вызовом метода capitalize().
