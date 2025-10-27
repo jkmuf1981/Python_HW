@@ -1,11 +1,11 @@
 import unittest
 from selenium import webdriver
-from .pages import *
+from pages.page import LoginPage,ProductPage,CartPage,CheckoutStepOnePage,CheckoutOverviewPage
 
 
 class TestShop(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Chrome()  # Используйте нужный вам веб-драйвер
+        self.driver = webdriver.Edge()  # Используйте нужный вам веб-драйвер
         self.driver.get("https://www.saucedemo.com/")
 
     def tearDown(self):
@@ -28,7 +28,7 @@ class TestShop(unittest.TestCase):
         cart_page.checkout()
 
         checkout_step_one_page = CheckoutStepOnePage(self.driver)
-        checkout_step_one_page.fill_first_name('John')
+        checkout_step_one_page.fill_first_name()
         checkout_step_one_page.fill_last_name('Doe')
         checkout_step_one_page.fill_postal_code('12345')
         checkout_step_one_page.continue_checkout()

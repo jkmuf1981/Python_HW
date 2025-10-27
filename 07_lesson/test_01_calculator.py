@@ -26,13 +26,11 @@ class TestSlowCalculator(unittest.TestCase):
         self.calculator_page.click_button(CalculatorPage.BUTTON_8_LOCATOR)
         self.calculator_page.click_button(CalculatorPage.BUTTON_EQUALS_LOCATOR)
 
-        # Ждём результат
-        wait = WebDriverWait(self.driver, 50)  # дожидаемся результата в течение 50 секунд
-        result = wait.until(lambda x: self.calculator_page.get_result())  # сократили длинную строку
+
+
 
         # Проверяем результат
-        self.assertEqual(result, '15',
-                         f'Ожидался результат "15", а получилось "{result}"')  # перенесли строку
+        self.calculator_page.check_result()
 
     def tearDown(self):
         # Закрываем браузер после окончания теста

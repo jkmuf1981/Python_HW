@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 
 class LoginPage:
@@ -20,9 +21,7 @@ class LoginPage:
         self.driver.find_element(By.ID, 'login-button').click()
 
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 
 class ProductPage:
     def __init__(self, driver):
@@ -45,9 +44,6 @@ class ProductPage:
         cart_icon.click()
 
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class CartPage:
@@ -56,28 +52,42 @@ class CartPage:
 
     def checkout(self):
         """Метод инициирует оформление покупки"""
+
         wait = WebDriverWait(self.driver, 15)
-        checkout_button = wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn_action.checkout_button"))
-        )
-        checkout_button.click()
+        wait.until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn_action.checkout_button"))
+        ).click()
+
+
 
 
 class CheckoutStepOnePage:
     def __init__(self, driver):
         self.driver = driver
 
-    def fill_first_name(self, first_name):
-        """Метод вводит имя покупателя"""
-        self.driver.find_element(By.ID, 'first-name').send_keys(first_name)
+    def fill_first_name(self):
+        """Метод инициирует оформление покупки"""
+
+        wait = WebDriverWait(self.driver, 15)
+        wait.until(
+        EC.element_to_be_clickable((By.ID, "first-name"))
+                                    ).send_keys("John")
 
     def fill_last_name(self, last_name):
         """Метод вводит фамилию покупателя"""
-        self.driver.find_element(By.ID, 'last-name').send_keys(last_name)
+        wait = WebDriverWait(self.driver, 15)
+        wait.until(
+            EC.element_to_be_clickable((By.ID, "last-name"))
+        ).send_keys(last_name)
+
 
     def fill_postal_code(self, postal_code):
         """Метод вводит почтовый индекс"""
-        self.driver.find_element(By.ID, 'postal-code').send_keys(postal_code)
+        wait = WebDriverWait(self.driver, 15)
+        wait.until(
+            EC.element_to_be_clickable((By.ID, 'postal-code'))
+        ).send_keys(postal_code)
+
 
     def continue_checkout(self):
         """Метод продолжает процесс оформления заказа"""

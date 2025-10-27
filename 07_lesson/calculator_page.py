@@ -7,10 +7,10 @@ class CalculatorPage:
     # Локаторы элементов
     DELAY_INPUT_LOCATOR = (By.ID, 'delay')
     RESULT_FIELD_LOCATOR = (By.CSS_SELECTOR, '.screen')
-    BUTTON_7_LOCATOR = (By.XPATH, "//button[.='7']")  # Новый локатор
-    BUTTON_PLUS_LOCATOR = (By.XPATH, "//button[@value='+']")
-    BUTTON_8_LOCATOR = (By.XPATH, "//button[@value='8']")
-    BUTTON_EQUALS_LOCATOR = (By.XPATH, "//button[@value='=']")
+    BUTTON_7_LOCATOR = (By.XPATH, "//span[text()='7']")  # Новый локатор
+    BUTTON_PLUS_LOCATOR = (By.XPATH, "//span[text()='+']")
+    BUTTON_8_LOCATOR = (By.XPATH, "//span[text()='8']")
+    BUTTON_EQUALS_LOCATOR = (By.XPATH, "//span[text()='=']")
 
     # остальные методы остаются без изменений
 
@@ -23,11 +23,13 @@ class CalculatorPage:
         input_field.send_keys(str(delay_value))
 
     def click_button(self, button_locator):
-        button = WebDriverWait(self.driver, 45).until(  # увеличенное время ожидания
+        button = WebDriverWait(self.driver, 10).until(  # увеличенное время ожидания
             EC.element_to_be_clickable(button_locator)
         )
         button.click()
 
-    def get_result(self):
-        result_field = self.driver.find_element(*self.RESULT_FIELD_LOCATOR)
-        return result_field.text.strip()
+    def check_result(self):
+        WebDriverWait(self.driver, 45).until(  # увеличенное время ожидания
+            EC.text_to_be_present_in_element(self.RESULT_FIELD_LOCATOR,"15")
+        )
+
