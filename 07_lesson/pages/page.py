@@ -1,104 +1,74 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 
-
-class LoginPage:
+class PageBase:
     def __init__(self, driver):
         self.driver = driver
+
+    def find_element(self, by, locator):
+        return self.driver.find_element(by, locator)
+
+class LoginPage(PageBase):
+    def __init__(self, driver):
+        super().__init__(driver)
 
     def enter_username(self, username):
-        """Метод вводит имя пользователя"""
-        self.driver.find_element(By.ID, 'user-name').send_keys(username)
+        user_input = self.find_element(By.ID, 'user-name')
+        user_input.send_keys(username)
 
     def enter_password(self, password):
-        """Метод вводит пароль"""
-        self.driver.find_element(By.ID, 'password').send_keys(password)
+        pass_input = self.find_element(By.ID, 'password')
+        pass_input.send_keys(password)
 
     def click_login_button(self):
-        """Метод нажимает кнопку входа"""
-        self.driver.find_element(By.ID, 'login-button').click()
+        login_btn = self.find_element(By.CLASS_NAME, 'btn_action')
+        login_btn.click()
 
-
-
-
-class ProductPage:
+class ProductPage(PageBase):
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)
 
     def add_to_cart_by_name(self, product_name):
-        """Метод добавляет товар в корзину по названию товара"""
-        xpath_selector = f'//div[text()="{product_name}"]/ancestor::div[@class="inventory_item"]//button'
-        try:
-            button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, xpath_selector))
-            )
-            button.click()
-        except Exception as e:
-            print(f"Error adding item '{product_name}' to the cart: {e}")
+        element = self.find_element(By.XPATH, f"//div[contains(@class,'inventory_item_name')][normalize-space()='{product_name}']")
+        parent_div = element.find_element(By.XPATH, "./ancestor::div[@class='inventory_item']")
+        add_to_cart_button = parent_div.find_element(By.CLASS_NAME, 'btn_inventory')
+        add_to_cart_button.click()
 
     def go_to_cart(self):
-        """Метод открывает страницу корзины"""
-        cart_icon = self.driver.find_element(By.CLASS_NAME, 'shopping_cart_link')
-        cart_icon.click()
+        cart_link = self.find_element(By.CLASS_NAME, 'shopping_cart_link')
+        cart_link.click()
 
-
-
-
-class CartPage:
+class CartPage(PageBase):
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)
 
     def checkout(self):
-        """Метод инициирует оформление покупки"""
+        checkout_button = self.find_element(By.CLASS_NAME, 'checkout_button')
+        checkout_button.click()
 
-        wait = WebDriverWait(self.driver, 15)
-        wait.until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, ".btn_action.checkout_button"))
-        ).click()
-
-
-
-
-class CheckoutStepOnePage:
+class CheckoutStepOnePage(PageBase):
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)
 
-    def fill_first_name(self):
-        """Метод инициирует оформление покупки"""
+    def fill_first_name(self, first_name_value):
+        first_name_field = self.find_element(By.ID, 'first-name')
+        first_name_field.send_keys(first_name_value)
 
-        wait = WebDriverWait(self.driver, 15)
-        wait.until(
-        EC.element_to_be_clickable((By.ID, "first-name"))
-                                    ).send_keys("John")
+    def fill_last_name(self, last_name_value):
+        last_name_field = self.find_element(By.ID, 'last-name')
+        last_name_field.send_keys(last_name_value)
 
-    def fill_last_name(self, last_name):
-        """Метод вводит фамилию покупателя"""
-        wait = WebDriverWait(self.driver, 15)
-        wait.until(
-            EC.element_to_be_clickable((By.ID, "last-name"))
-        ).send_keys(last_name)
-
-
-    def fill_postal_code(self, postal_code):
-        """Метод вводит почтовый индекс"""
-        wait = WebDriverWait(self.driver, 15)
-        wait.until(
-            EC.element_to_be_clickable((By.ID, 'postal-code'))
-        ).send_keys(postal_code)
-
+    def fill_postal_code(self, postal_code_value):
+        postal_code_field = self.find_element(By.ID, 'postal-code')
+        postal_code_field.send_keys(postal_code_value)
 
     def continue_checkout(self):
-        """Метод продолжает процесс оформления заказа"""
-        self.driver.find_element(By.CSS_SELECTOR, '.cart_button').click()
+        continue_button = self.find_element(By.CLASS_NAME, 'cart_button')
+        continue_button.click()
 
-
-class CheckoutOverviewPage:
+class CheckoutOverviewPage(PageBase):
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)
 
     def get_total_price(self):
-        """Метод возвращает итоговую сумму заказа"""
-        total_text = self.driver.find_element(By.CLASS_NAME, 'summary_total_label').text
-        return float(total_text.split('$')[-1])
+        total_text = self.find_element(By.CLASS_NAME, 'summary_total_label').text
+        return float(total_text.split(':')[1].strip().replace('$', ''))

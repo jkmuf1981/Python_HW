@@ -1,35 +1,34 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# Файл: pages/calculator_page.py
 
+from selenium.webdriver.common.by import By
 
 class CalculatorPage:
-    # Локаторы элементов
-    DELAY_INPUT_LOCATOR = (By.ID, 'delay')
-    RESULT_FIELD_LOCATOR = (By.CSS_SELECTOR, '.screen')
-    BUTTON_7_LOCATOR = (By.XPATH, "//span[text()='7']")  # Новый локатор
-    BUTTON_PLUS_LOCATOR = (By.XPATH, "//span[text()='+']")
-    BUTTON_8_LOCATOR = (By.XPATH, "//span[text()='8']")
-    BUTTON_EQUALS_LOCATOR = (By.XPATH, "//span[text()='=']")
+    BUTTON_7_LOCATOR = (By.XPATH, "//button[@value='7']")
+    BUTTON_PLUS_LOCATOR = (By.XPATH, "//button[@value='+']")
+    BUTTON_8_LOCATOR = (By.XPATH, "//button[@value='8']")
+    BUTTON_EQUALS_LOCATOR = (By.XPATH, "//button[@value='=']")
+    RESULT_FIELD_LOCATOR = (By.ID, "result_field_id")  # Предположим, ID поля результата
 
-    # остальные методы остаются без изменений
+    def __init__(self, browser):
+        self.browser = browser
 
-    def __init__(self, driver):
-        self.driver = driver
-
-    def set_delay(self, delay_value):
-        input_field = self.driver.find_element(*self.DELAY_INPUT_LOCATOR)
-        input_field.clear()
-        input_field.send_keys(str(delay_value))
-
-    def click_button(self, button_locator):
-        button = WebDriverWait(self.driver, 10).until(  # увеличенное время ожидания
-            EC.element_to_be_clickable(button_locator)
-        )
+    def click_button(self, locator):
+        button = self.browser.find_element(*locator)
         button.click()
 
-    def check_result(self):
-        WebDriverWait(self.driver, 45).until(  # увеличенное время ожидания
-            EC.text_to_be_present_in_element(self.RESULT_FIELD_LOCATOR,"15")
+    def wait_until_ready_state_complete(self):
+        WebDriverWait(self.browser, 30).until(
+            lambda x: x.execute_script("return document.readyState") == "complete"
         )
 
+    def set_delay(self, seconds):
+        # Здесь мы эмулируем задержку (при условии, что приложение само её не реализует)
+        import time
+        time.sleep(seconds)
+
+    def get_result(self):
+        return self.browser.find_element(*self.RESULT_FIELD_LOCATOR).text.strip()
+
+    def get_result(self):
+        """Получает результат из окна калькулятора."""
+        return self.driver.find_element(*self.RESULT_FIELD_LOCATOR).text.strip()
