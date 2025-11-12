@@ -1,13 +1,14 @@
-import os
+
 import pytest
+
 
 @pytest.fixture(scope="session")
 def base_url():
-    return "https://yougile-server.example.com"  # Укажи реальный URL сервиса
+    return "https://ru.yougile.com"  # Укажи реальный URL сервиса
+
 
 @pytest.fixture(scope="session")
 def auth_headers():
-    token = os.getenv("YOUGILE_API_KEY")  # Получаем токен из переменной окружения
-    if not token:
-        raise ValueError("Environment variable YOUGILE_API_KEY must be set!")
+    token = "ReW6lYqS2lcSxinJtKFvQ60PV1Onxoe6Nzad82s5COBUvkUn8as7oZ6ZJVLoc2tJ"
+
     return {"Authorization": f"Bearer {token}"}
