@@ -9,6 +9,6 @@ def base_url():
 
 @pytest.fixture(scope="session")
 def auth_headers():
-    token = "ReW6lYqS2lcSxinJtKFvQ60PV1Onxoe6Nzad82s5COBUvkUn8as7oZ6ZJVLoc2tJ"
+    token = "Укажите свой токен"
 
     return {"Authorization": f"Bearer {token}"}
