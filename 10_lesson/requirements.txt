@@ -1,0 +1,3 @@
+selenium==4.x.y
+pytest==7.x.y
+pytest-allure-adder==2.x.y
